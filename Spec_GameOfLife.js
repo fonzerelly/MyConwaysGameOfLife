@@ -1,5 +1,5 @@
 /*global describe, it, expect, beforeEach,  _, load, print, java, nextGeneration*/
-load("GameOfLife.js");
+//load("GameOfLife.js");
 /**/
 describe("_.containsNonPrimitive", function () {
     it ("shall find an Array in an Array", function () {

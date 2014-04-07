@@ -1,5 +1,5 @@
 /*global _, load, print, runCommand*/
-load("lib/lodash.js");
+//load("lib/lodash.js");
 _.mixin({
     "containsNonPrimitive": function (collection, nonPrimitiveTarget) {
         return _.any(collection, _.partial(_.isEqual, nonPrimitiveTarget));
