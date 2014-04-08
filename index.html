@@ -6,6 +6,9 @@
 
   <!-- include source files here... -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+  <script type="text/javascript">
+        function load() {}
+  </script>
   <script type="text/javascript" src="GameOfLife.js"></script>
 
 </head>
@@ -16,36 +19,45 @@ Random Canvas
 </canvas>
 
 <script type="text/javascript">
-function setPixel(imageData, x, y, r, g, b, a) {
-    index = (x + y * imageData.width) * 4;
-    imageData.data[index+0] = r;
-    imageData.data[index+1] = g;
-    imageData.data[index+2] = b;
-    imageData.data[index+3] = a;
-}
+window.onload = function () {
+    function setPixel(imageData, x, y, r, g, b, a) {
+        index = (x + y * imageData.width) * 4;
+        imageData.data[index+0] = r;
+        imageData.data[index+1] = g;
+        imageData.data[index+2] = b;
+        imageData.data[index+3] = a;
+    }
 
-element = document.getElementById("canvas1");
-c = element.getContext("2d");
+    element = document.getElementById("canvas1");
+    c = element.getContext("2d");
 
-// read the width and height of the canvas
-width = element.width;
-height = element.height;
+    // read the width and height of the canvas
+    width = element.width;
+    height = element.height;
 
-// create a new pixel array
-imageData = c.createImageData(width, height);
+    // create a new pixel array
+    imageData = c.createImageData(width, height);
 
-// draw random dots
-var init=[[19,20], [20,20], [21,20],[20,21],[20,22],[20,23]];
+    // draw random dots
+    var init=[[19,20], [20,20], [21,20],[20,21],[20,22],[20,23]];
 
-function renderGen(cells) {
-    cells.forEach(function (cell) {
-        setPixel(imageData, cell[0], cell[1], 0, 0, 255, 255); // 255 opaque
-    });
-    // copy the image data back onto the canvas
-    c.putImageData(imageData, 0, 0); // at coords 0,0
-}
+    function renderGen(cells) {
+        cells.forEach(function (cell) {
+            setPixel(imageData, cell[0], cell[1], 0, 0, 255, 255); // 255 opaque
+        });
+        // copy the image data back onto the canvas
+        c.clearRect(0,0,imageData.width, imageData.height);
+        c.putImageData(imageData, 0, 0); // at coords 0,0
+    }
 
-renderGen(init);
+    var next = init;
+    var animate = function () {
+        renderGen(next);
+        next = nextGeneration(next);
+    };
+    setInterval(animate,10);
+};
+
 
 </script>
 </body>
