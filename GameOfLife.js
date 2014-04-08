@@ -1,5 +1,5 @@
 /*global _, load, print, runCommand*/
-//load("lib/lodash.js");
+load("lib/lodash.js");
 _.mixin({
     "containsNonPrimitive": function (collection, nonPrimitiveTarget) {
         return _.any(collection, _.partial(_.isEqual, nonPrimitiveTarget));
@@ -95,15 +95,3 @@ var printField = function (cells) {
 };
 
 
-var next=[[19,20], [20,20], [21,20],[20,21],[20,22],[20,23]];
-//printField(nextGeneration(nextGeneration(next)));
-//var newField = nextGeneration(next);
-//var bugField = nextGeneration (newField);
-function main() {
-    while (true) {
-    printField(next);
-    next = nextGeneration(next);
-    runCommand("cmd","/c","cls");
-    }
-}
-main();
