@@ -80,18 +80,4 @@ var nextGeneration = function (initField) {
     return cleanedByDeadCells.concat(enlivedCells);
 };
 
-var printField = function (cells) {
-    var output = "";
-    _.each(_.range(30), function (y) {
-        var line="";
-        _.each(_.range(30), function (x) {
-            var mask = [" ","X"];
-            line += (mask[Number(_.containsNonPrimitive(cells, [x,y]))]); 
-        });
-        line += "\n";
-        output += line;
-    });
-    print(output);
-};
-
 
