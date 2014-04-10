@@ -5,7 +5,7 @@
   <title>MyConwaysGameOfLifeTests</title>
 
   <!-- include source files here... -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
   <script type="text/javascript">
         function load() {}
   </script>
@@ -14,7 +14,7 @@
 </head>
 
 <body>
-<canvas id="canvas1" width="100", height="100">
+<canvas id="canvas1" width="100" height="100">
 Random Canvas
 </canvas>
 
@@ -41,19 +41,23 @@ window.onload = function () {
     // draw random dots
     var init=[[19,20], [20,20], [21,20],[20,21],[20,22],[20,23]];
 
-    function renderGen(cells) {
+    function renderGen(cells, oldCells) {
+        oldCells = oldCells || [];
+        oldCells.forEach(function (cell) {
+            setPixel(imageData, cell[0], cell[1], 255, 255, 255, 255); // 255 opaque
+        });
         cells.forEach(function (cell) {
-            setPixel(imageData, cell[0], cell[1], 0, 0, 255, 255); // 255 opaque
+            setPixel(imageData, cell[0], cell[1], 255, 0, 0, 255); // 255 opaque
         });
         // copy the image data back onto the canvas
-        c.clearRect(0,0,imageData.width, imageData.height);
         c.putImageData(imageData, 0, 0); // at coords 0,0
     }
 
     var next = init;
     var animate = function () {
-        renderGen(next);
-        next = nextGeneration(next);
+        var oldCells = next;
+        next = nextGeneration(oldCells);
+        renderGen(next, oldCells);
     };
     setInterval(animate,10);
 };
