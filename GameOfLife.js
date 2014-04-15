@@ -27,11 +27,14 @@ _.mixin({
     }
 });
 
-var _defineNeighbors = function (myCell) {
-    var x = myCell[0],
+var _defineNeighbors = _.memoize(
+    function (myCell) {
+        var x = myCell[0],
         y = myCell[1];
-    return [[x-1, y], [x-1,y-1], [x-1,y+1], [x, y-1], [x,y+1], [x+1,y], [x+1,y+1], [x+1,y-1]];
-};
+        return [[x-1, y], [x-1,y-1], [x-1,y+1], [x, y-1], [x,y+1], [x+1,y], [x+1,y+1], [x+1,y-1]];
+    }
+);
+
 var _intersection = function(a, b) {
     return _.filter(a, function(x) {
         return _.containsNonPrimitive(b, x);
@@ -43,30 +46,39 @@ var simpleCellPredicat = function (cellA, cellB) {
     return cellA[prevailDimension] < cellB[prevailDimension]; 
 };
 
+var createIsAliveCheck = function (potentialNewCells) {
+    return _.memoize (
+        function (cell) {
+            var count = _.reduce(
+                potentialNewCells, 
+                function (count, aNeighborCell) {
+                    count += Number(_.isEqual(cell, aNeighborCell));
+                    return count;
+                },
+                0
+            );
+            return count === 3;
+        }
+    );
+};
+
 var nextGeneration = function (initField) {
     var cleanedByDeadCells= _.filter(initField, function (cell) {
         var neighbors = _defineNeighbors(cell);
         var result = _intersection(neighbors, initField);
         return result.length > 1 && result.length <= 3;
     });
+
+    var allPotentialNewCells = _.flatten(
+        _.map(initField, _defineNeighbors),
+        true
+    );
+
     var enlivedCells = _.filter(
         _.filter(
             _.filter(
-                _.flatten(
-                    _.map(initField, _defineNeighbors),
-                    true
-                ),
-                function (potentialNewCell, index, array) {
-                    var count = _.reduce(
-                       array, 
-                       function (count, aNeighborCell) {
-                           count += Number(_.isEqual(potentialNewCell, aNeighborCell));
-                           return count;
-                       },
-                       0
-                   );
-                   return count===3;
-                }
+                allPotentialNewCells,
+                createIsAliveCheck(allPotentialNewCells)
             ).sort(_.assortedComparator(simpleCellPredicat)),
             function(cell, index, array) {
                 return (index % 3) === 0;
