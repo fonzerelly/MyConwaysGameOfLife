@@ -1,4 +1,4 @@
-/*global describe, it, expect, beforeEach,  _, load, print, java, nextGeneration*/
+/*global describe, it, expect, beforeEach,  _, load, java, nextGeneration*/
 //load("GameOfLife.js");
 /**/
 describe("_.containsNonPrimitive", function () {
