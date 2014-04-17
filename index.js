@@ -36,6 +36,9 @@ var printField = function (cells) {
 //Cathedral
 var next=[[19,20], [20,20], [21,20],[20,21],[20,22],[20,23]];
 
+//Blinker
+//var next=[[19,20], [20,20], [21,20]];
+
 //Glider
 //var next=[[5,6], [6,6], [7,6],[7,5],[6,4],[20,23]];
 printField (next);
