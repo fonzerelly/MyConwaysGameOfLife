@@ -27,7 +27,10 @@ _.mixin({
     }
 });
 
-var _defineNeighbors = _.memoize(
+//ToDo: Assure that created a Neighbour only gets added to the result once!!!
+//First idea: Make functions for each direction, that only add their result to the global result, if it is not yet present
+//User Number agein to identify Index - User 2D-Array als global result, to store valid results in [0] and invalid in [1]
+var defineNeighbors = _.memoize(
     function (myCell) {
         var x = myCell[0],
         y = myCell[1];
@@ -35,7 +38,14 @@ var _defineNeighbors = _.memoize(
     }
 );
 
-var _intersection = function(a, b) {
+var collectNeighbors = function (cells) {
+    return _.flatten(
+        _.map(cells, defineNeighbors),
+        true
+    );
+};
+
+var intersect = function(a, b) {
     return _.filter(a, function(x) {
         return _.containsNonPrimitive(b, x);
     });
@@ -62,28 +72,47 @@ var createIsAliveCheck = function (potentialNewCells) {
     );
 };
 
+var awakenCells = function (allPotentialNewCells) {
+  var isAlive = createIsAliveCheck(allPotentialNewCells);
+  var result = [];
+  var handleCells = [
+    _.noop,
+    _.memoize(
+      function (cell) {
+        result.push(cell);
+      }
+    )
+  ];
+  
+  _.forEach(allPotentialNewCells, function (cell) {
+      handleCells[Number(isAlive(cell))](cell);
+  });
+
+  return result;
+
+      
+  /*
+  return  _.filter(
+    _.filter(
+      allPotentialNewCells,
+      createIsAliveCheck(allPotentialNewCells)
+    ).sort(_.assortedComparator(simpleCellPredicat)),
+    function(cell, index, array) {
+      return (index % 3) === 0;
+    }
+  );
+  */
+};
+
 var nextGeneration = function (initField) {
     var cleanedByDeadCells= _.filter(initField, function (cell) {
-        var neighbors = _defineNeighbors(cell);
-        var result = _intersection(neighbors, initField);
+        var neighbors = defineNeighbors(cell);
+        var result = intersect(neighbors, initField);
         return result.length > 1 && result.length <= 3;
     });
 
-    var allPotentialNewCells = _.flatten(
-        _.map(initField, _defineNeighbors),
-        true
-    );
-
     var enlivedCells = _.filter(
-        _.filter(
-            _.filter(
-                allPotentialNewCells,
-                createIsAliveCheck(allPotentialNewCells)
-            ).sort(_.assortedComparator(simpleCellPredicat)),
-            function(cell, index, array) {
-                return (index % 3) === 0;
-            }
-        ),
+        awakenCells(collectNeighbors(initField)),
         function(cell) {
             return !_.containsNonPrimitive(cleanedByDeadCells, cell);
         }
