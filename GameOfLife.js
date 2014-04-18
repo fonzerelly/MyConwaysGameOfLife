@@ -1,8 +1,12 @@
 /*global _, load, print, runCommand*/
 load("lib/lodash.js");
+var areCellsEqual = function (first, second) {
+  return first[0] === second[0] && first[1] === second[1];
+};
+
 _.mixin({
     "containsNonPrimitive": function (collection, nonPrimitiveTarget) {
-        return _.any(collection, _.partial(_.isEqual, nonPrimitiveTarget));
+        return _.any(collection, _.partial(areCellsEqual, nonPrimitiveTarget));
     },
 
     "assortedComparator" : function (predicate) {
@@ -62,7 +66,8 @@ var createIsAliveCheck = function (potentialNewCells) {
             var count = _.reduce(
                 potentialNewCells, 
                 function (count, aNeighborCell) {
-                    count += Number(_.isEqual(cell, aNeighborCell));
+                    //count += Number(_.isEqual(cell, aNeighborCell));
+                    count += Number(areCellsEqual(cell, aNeighborCell));
                     return count;
                 },
                 0
