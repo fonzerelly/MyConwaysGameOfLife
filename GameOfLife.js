@@ -6,7 +6,11 @@ var areCellsEqual = function (first, second) {
 
 _.mixin({
     "containsNonPrimitive": function (collection, nonPrimitiveTarget) {
-        return _.any(collection, _.partial(areCellsEqual, nonPrimitiveTarget));
+        return _.any(collection, 
+	    function (cell) {
+		return areCellsEqual(cell, nonPrimitiveTarget);
+	    }
+	);
     },
 
     "assortedComparator" : function (predicate) {
@@ -31,9 +35,6 @@ _.mixin({
     }
 });
 
-//ToDo: Assure that created a Neighbour only gets added to the result once!!!
-//First idea: Make functions for each direction, that only add their result to the global result, if it is not yet present
-//User Number agein to identify Index - User 2D-Array als global result, to store valid results in [0] and invalid in [1]
 var defineNeighbors = _.memoize(
     function (myCell) {
         var x = myCell[0],
