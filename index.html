@@ -57,6 +57,7 @@ window.onload = function () {
     var animate = function () {
         var oldCells = next;
         next = nextGeneration(oldCells);
+        console.log(next);
         renderGen(next, oldCells);
     };
     setInterval(animate,10);
