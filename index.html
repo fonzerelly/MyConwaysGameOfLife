@@ -57,7 +57,11 @@ window.onload = function () {
     var animate = function () {
         var oldCells = next;
         next = nextGeneration(oldCells);
-        console.log(next);
+        stringRepresentation = next.reduce(function(repr, cell) {
+            repr += '[' + cell[0] + ',' + cell[1] +']';
+            return repr;
+        }, '')
+        console.log('[' + stringRepresentation + ']');
         renderGen(next, oldCells);
     };
     setInterval(animate,10);
